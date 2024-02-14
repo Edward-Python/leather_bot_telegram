@@ -1,10 +1,12 @@
+import os
 from aiogram import Router, F
-from aiogram.types import Message, FSInputFile, ReplyKeyboardRemove
-from aiogram.filters import CommandStart
+from aiogram.types import Message, FSInputFile
+from aiogram.filters import CommandStart, Command
 from aiogram.utils.media_group import MediaGroupBuilder
 
 from handlers import keyboard, women_wallet_kenya, mini_wallet
 from configs import msg
+from admin.admin_inline_kb import admin_panel
 
 
 router = Router()
@@ -13,7 +15,17 @@ router = Router()
 @router.message(CommandStart())
 async def cmd_start(message: Message):
     await message.answer(text=(f"Привет <b>{message.from_user.full_name}</b>.\n"
-                               f"{msg.CMD_START}"), reply_markup=keyboard.menu_main)
+                            f"{msg.CMD_START}"), reply_markup=keyboard.menu_main)
+    
+
+@router.message(Command("admin"))
+async def admin(message: Message):
+    if message.from_user.id == int(os.getenv("ADMIN_ID")):
+        await message.answer(text=f"Привет {message.from_user.full_name}", reply_markup=keyboard.menu_main)
+        await message.answer(text=("Добро пожаловать в админ панель"),\
+                             reply_markup=admin_panel())
+    else: 
+        await message.answer("Нет такой команды!")
     
 
 @router.message(F.text.upper() == "🔎 О НАС")
