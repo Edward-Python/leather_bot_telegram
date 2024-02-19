@@ -1,16 +1,26 @@
-from aiogram.types import InlineKeyboardButton
+from aiogram.types import InlineKeyboardButton, KeyboardButton
 from aiogram.utils.media_group import MediaGroupBuilder
-from aiogram.utils.keyboard import InlineKeyboardBuilder
+from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
 
 
 def admin_panel():
-    builder_admin_panel = InlineKeyboardBuilder()
-    builder_admin_panel.row(
-        InlineKeyboardButton(text="добавить", callback_data="add"),
-        InlineKeyboardButton(text="изменить", callback_data="change"),
-        InlineKeyboardButton(text="выход", callback_data="cancel"),
-    ), builder_admin_panel.adjust(3)
-    return builder_admin_panel.as_markup(resize_keyboard=True)
+    builder = ReplyKeyboardBuilder()
+    builder.row(
+        KeyboardButton(text="добавить"),
+        KeyboardButton(text="удалить"),
+        KeyboardButton(text="выход")
+    ), builder.adjust(1, 1, 1)
+    return builder.as_markup(resize_keyboard=True)
+
+
+# def admin_panel():
+#     builder_admin_panel = InlineKeyboardBuilder()
+#     builder_admin_panel.row(
+#         InlineKeyboardButton(text="добавить", callback_data="add"),
+#         InlineKeyboardButton(text="удалить", callback_data="delete"),
+#         InlineKeyboardButton(text="выход", callback_data="cancel"),
+#     ), builder_admin_panel.adjust(3)
+#     return builder_admin_panel.as_markup(resize_keyboard=True)
 
 ################## button add ###################
 
