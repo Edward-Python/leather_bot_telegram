@@ -18,21 +18,15 @@ def admin_panel_add():
     builder_admin_panel = InlineKeyboardBuilder()
     builder_admin_panel.row(
         InlineKeyboardButton(text="фотографии", callback_data="add_photo"),
-        InlineKeyboardButton(text="описание", callback_data="add_change"),
-        InlineKeyboardButton(text="цена", callback_data="add_price"),
-        InlineKeyboardButton(text="нвзвд", callback_data="add_cancel"),
-    ), builder_admin_panel.adjust(3, 1)
+        # InlineKeyboardButton(text="описание", callback_data="add_change"),
+        InlineKeyboardButton(text="цену", callback_data="add_price"),
+        # InlineKeyboardButton(text="нвзвд", callback_data="add_cancel"),
+    ), builder_admin_panel.adjust(3)
     return builder_admin_panel.as_markup(resize_keyboard=True)
 
 ################# if add_photo ####################
 
-
 ################# if add_cancel ####################
-
-
-
-
-
 
 ################## button change ###################
 

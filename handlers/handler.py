@@ -21,7 +21,8 @@ async def cmd_start(message: Message):
 @router.message(Command("admin"))
 async def admin(message: Message):
     if message.from_user.id == int(os.getenv("ADMIN_ID")):
-        await message.answer(text=f"Привет {message.from_user.full_name}", reply_markup=keyboard.menu_main)
+        await message.answer(text=f"Привет {message.from_user.full_name}",\
+                             reply_markup=keyboard.menu_main)
         await message.answer(text=("Добро пожаловать в админ панель"),\
                              reply_markup=admin_panel())
     else: 
