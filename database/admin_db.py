@@ -8,11 +8,25 @@ class AdminDB:
         self.cur.execute('''CREATE TABLE IF NOT EXISTS admin_table(
                          id INTEGER PRYMARY KEY NOT NULL,
                          photo BLOB,
-                         change TEXT,
-                         price INTEGER)''')
+                         photo1 BLOB,
+                         change BLOB,
+                         price BLOB)''')
         self.db.commit()
 
-    def add(self, photo, change, price):
-        self.cur.execute("""INSERT INTO admin_table (photo, change, price)
-                    VALUES (?, ?)""", (photo, change, price))
+    def add(self, photo, photo1, change, price):
+        self.cur.execute("""INSERT INTO admin_table (photo, photo1, change, price)
+                    VALUES (?, ?, ?, ?)""", (photo, photo1, change, price))
         self.db.commit()
+
+
+    
+
+    # def change(self, change):
+    #     self.cur.execute("""INSERT INTO admin_table (change)
+    #                 VALUES (?)""", (change))
+    #     self.db.commit()
+
+    # def price(self, price):
+    #     self.cur.execute("""INSERT INTO admin_table (price)
+    #                 VALUES (?)""", (price))
+    #     self.db.commit()

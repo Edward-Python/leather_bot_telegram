@@ -16,7 +16,7 @@ router = Router()
 async def cmd_start(message: Message):
     await message.answer(text=(f"Привет <b>{message.from_user.full_name}</b>.\n"
                             f"{msg.CMD_START}"), reply_markup=keyboard.menu_main)
-    
+
 
 @router.message(Command("admin"))
 async def admin(message: Message):

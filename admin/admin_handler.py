@@ -2,11 +2,13 @@ from aiogram import Router, F
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
 from aiogram.filters import StateFilter, Command
-from aiogram.types import Message, FSInputFile, CallbackQuery, ReplyKeyboardRemove
+from aiogram.types import Message, FSInputFile, CallbackQuery, ReplyKeyboardRemove, InputFile
+from aiogram.utils.media_group import MediaGroupBuilder
 
 from admin.admin_inline_kb import admin_panel_add, admin_panel_change, admin_panel
 from handlers.keyboard import menu_main
 from database.admin_db import AdminDB
+
 
 admin_db = AdminDB()
 router_admin = Router()
@@ -14,6 +16,7 @@ router_admin = Router()
 ################## admin_panel #######################
 class Add(StatesGroup):
     add_photo = State()
+    add_photo_1 = State()
     add_change = State()
     add_price = State()
 
@@ -29,16 +32,28 @@ async def add(message: Message, state: FSMContext):
 
 @router_admin.message(Add.add_photo, F.photo)
 async def add(message: Message, state: FSMContext):
-    await message.answer(text="Фотографии добавлены")
-    await state.update_data(add_photo=message.photo[-1].file_id)
+    
+    add_phot = message.photo[-1].file_id
+    await state.update_data(add_photo=add_phot)
+    await message.answer(text="Фотография добавлена")
 
-    await message.answer(text="✅Добавьте описание товара")
+    await state.set_state(Add.add_photo_1)
+    await message.answer(text="✅Добавьте ещё одно фото")
+
+
+@router_admin.message(Add.add_photo_1, F.photo)
+async def add(message: Message, state: FSMContext):
+    
+    add_phots = message.photo[-1].file_id
+    await state.update_data(add_photo_1=add_phots)
+    await message.answer(text="Фотографии добавлены")
+
     await state.set_state(Add.add_change)
+    await message.answer(text="✅Добавьте описание товара")
 
 
 @router_admin.message(Add.add_change, F.text)
 async def add(message: Message, state: FSMContext):
-    await message.answer(text="Фотографии добавлены")
     await state.update_data(add_change=message.text)
 
     await message.answer(text="✅Укажите цену")
@@ -51,9 +66,28 @@ async def add(message: Message, state: FSMContext):
     await message.answer(text="Цена добавлена",\
                                   reply_markup=admin_panel())
     list_product = await state.get_data()
-    await message.answer(str(list_product))
+
+    list_product = list(list_product.values())
+    photo = list_product[0]
+    photo1 = list_product[1]
+    change = list_product[2]
+    price = list_product[3]  
+
+    admin_db.add(photo=photo, photo1=photo1, change=change, price=price)
+    
     await state.clear()
 
+
+@router_admin.message(F.text.lower() == "/ok")
+async def output_photo(message: Message):
+    album = MediaGroupBuilder()
+    photoss = []
+    res = admin_db.cur.execute("SELECT photo, photo1 FROM admin_table").fetchone()
+    for photos in res:
+        photoss.append(photos)
+    for i in photoss:
+        album.add(type="photo", media=i)
+    await message.answer_media_group(media=album.build())
 
 #####################  state Inline Dashboard ####################
 
