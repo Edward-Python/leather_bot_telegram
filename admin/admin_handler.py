@@ -1,12 +1,11 @@
 from aiogram import Router, F
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
-from aiogram.filters import StateFilter, Command
-from aiogram.types import Message, FSInputFile, CallbackQuery, ReplyKeyboardRemove, InputFile
+from aiogram.filters import StateFilter
+from aiogram.types import Message, ReplyKeyboardRemove
 from aiogram.utils.media_group import MediaGroupBuilder
 
-from admin.admin_inline_kb import admin_panel_add, admin_panel_change, admin_panel
-from handlers.keyboard import menu_main
+from admin.admin_inline_kb import admin_panel
 from database.admin_db import AdminDB
 
 
@@ -17,6 +16,8 @@ router_admin = Router()
 class Add(StatesGroup):
     add_photo = State()
     add_photo_1 = State()
+    add_photo_2 = State()
+    add_photo_3 = State()
     add_change = State()
     add_price = State()
 
@@ -25,27 +26,46 @@ class Add(StatesGroup):
 
 @router_admin.message(StateFilter(None), F.text.lower() == "добавить")
 async def add(message: Message, state: FSMContext):
-    await message.answer(text="✅Загрузите фотографии от 2 шт",\
+    await message.answer(text="❗Нужно загрузить 4 фото изделия❗")
+    await message.answer(text="✅Загрузите лучшее первое фото (для витрины)❕",\
                          reply_markup=ReplyKeyboardRemove())
     await state.set_state(Add.add_photo)
 
 
 @router_admin.message(Add.add_photo, F.photo)
-async def add(message: Message, state: FSMContext):
-    
+async def add(message: Message, state: FSMContext):    
     add_phot = message.photo[-1].file_id
     await state.update_data(add_photo=add_phot)
     await message.answer(text="Фотография добавлена")
 
     await state.set_state(Add.add_photo_1)
-    await message.answer(text="✅Добавьте ещё одно фото")
+    await message.answer(text="✅Загрузите второе фото")
 
 
 @router_admin.message(Add.add_photo_1, F.photo)
-async def add(message: Message, state: FSMContext):
-    
-    add_phots = message.photo[-1].file_id
-    await state.update_data(add_photo_1=add_phots)
+async def add(message: Message, state: FSMContext):    
+    add_phot_1 = message.photo[-1].file_id
+    await state.update_data(add_photo_1=add_phot_1)
+    await message.answer(text="Фотография добавлена")
+
+    await state.set_state(Add.add_photo_2)
+    await message.answer(text="✅Загрузите третее фото")
+
+
+@router_admin.message(Add.add_photo_2, F.photo)
+async def add(message: Message, state: FSMContext):    
+    add_phot_2 = message.photo[-1].file_id
+    await state.update_data(add_photo_2=add_phot_2)
+    await message.answer(text="Фотография добавлена")
+
+    await state.set_state(Add.add_photo_3)
+    await message.answer(text="✅Загрузите четвёртое фото")
+
+
+@router_admin.message(Add.add_photo_3, F.photo)
+async def add(message: Message, state: FSMContext):    
+    add_phot_3 = message.photo[-1].file_id
+    await state.update_data(add_photo_3=add_phot_3)
     await message.answer(text="Фотографии добавлены")
 
     await state.set_state(Add.add_change)
@@ -66,28 +86,18 @@ async def add(message: Message, state: FSMContext):
     await message.answer(text="Цена добавлена",\
                                   reply_markup=admin_panel())
     list_product = await state.get_data()
-
     list_product = list(list_product.values())
     photo = list_product[0]
-    photo1 = list_product[1]
-    change = list_product[2]
-    price = list_product[3]  
-
-    admin_db.add(photo=photo, photo1=photo1, change=change, price=price)
+    photo_1 = list_product[1]
+    photo_2 = list_product[2]
+    photo_3 = list_product[3]
+    change = list_product[4]
+    price = list_product[5]
+    admin_db.add(photo=photo, photo1=photo_1, photo2=photo_2, photo3=photo_3,\
+                 change=change, price=price)
     
     await state.clear()
 
-
-@router_admin.message(F.text.lower() == "/ok")
-async def output_photo(message: Message):
-    album = MediaGroupBuilder()
-    photoss = []
-    res = admin_db.cur.execute("SELECT photo, photo1 FROM admin_table").fetchone()
-    for photos in res:
-        photoss.append(photos)
-    for i in photoss:
-        album.add(type="photo", media=i)
-    await message.answer_media_group(media=album.build())
 
 #####################  state Inline Dashboard ####################
 
