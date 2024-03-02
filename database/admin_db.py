@@ -27,9 +27,31 @@ class AdminDB:
                     (photo, photo1, photo2, photo3, change, price))
         self.db.commit()
 
-    def photo_output(self):
-        return self.cur.execute("""SELECT photo, photo1, photo2, photo3 
+    def photos_db(self):
+        photo_album = self.cur.execute("""SELECT photo, photo1, photo2, photo3 
                          FROM admin_table""").fetchone()
+        photos = []
+        for photo in photo_album:
+            photos.append(photo)
+        return photos
     
-    def photo_showcase(self):
-        return self.cur.execute("""SELECT photo3 FROM admin_table""").fetchone()
+    def showcase_photo_db(self):
+        photo_sh_case = self.cur.execute("""SELECT photo FROM admin_table""").fetchone()
+        scase = []
+        for photo in photo_sh_case:
+            scase.append(photo)
+        return scase
+    
+    def description_db(self):
+        desc = self.cur.execute("""SELECT change FROM admin_table""").fetchone()
+        desc_product = []
+        for description in desc:
+            desc_product.append(description)
+        return desc_product
+    
+    def price_db(self):
+        price_prod = self.cur.execute("""SELECT price FROM admin_table""").fetchone()
+        price_product = []
+        for i in price_prod:
+            price_product.append(i)
+        return map(int, price_product)

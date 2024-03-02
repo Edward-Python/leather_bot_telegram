@@ -4,7 +4,7 @@ from aiogram.types import Message, FSInputFile
 from aiogram.filters import CommandStart, Command
 from aiogram.utils.media_group import MediaGroupBuilder
 
-from handlers import keyboard, women_wallet_kenya, mini_wallet, product
+from handlers import keyboard, women_wallet_kenya, product
 from configs import msg
 from admin.admin_inline_kb import admin_panel
 from database.admin_db import AdminDB
@@ -41,19 +41,10 @@ async def production_process(message: Message):
 
 @router.message(F.text.upper() == "👀 ИЗДЕЛИЯ")
 async def products(message: Message):
-    # photo_product_description = "configs/media/product_description/1.png"
-    # photo_women_wallet_kenya = "configs/media/women_wallet_kenya/3.png"
-    scase = []
-    showcase = admin_db.photo_showcase()
-    for photo in showcase:
-        scase.append(photo)
-    for i in scase:
+    showcase = admin_db.showcase_photo_db()
+    for i in showcase:
         await message.answer_photo(photo=i,\
-                                reply_markup=mini_wallet.inline_product())
-    # await message.answer_photo(photo=FSInputFile(photo_product_description),\
-    #                             reply_markup=mini_wallet.inline_product())
-    # await message.answer_photo(photo=FSInputFile(photo_women_wallet_kenya),\
-    #                             reply_markup=women_wallet_kenya.inline_product())
+                                reply_markup=product.inline_product())
 
 
 @router.message(F.text.upper() == "🛠 ИСПОЛЬЗУЕМЫЕ ИНСТРУМЕНТЫ")
