@@ -5,19 +5,20 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from configs import msg
 from database.admin_db import AdminDB
+from handlers.keyboard import menu_main
 
 prod_db = AdminDB()
 product_router = Router()
 
-
 ###############  Keybord #################
-def inline_product():
+def inline_product(k):
     builder = InlineKeyboardBuilder()
-    builder.row(
-        InlineKeyboardButton(text="🔎ОПИСАНИЕ", callback_data="description")
-    ), builder.adjust(1)
+    builder.add(
+        InlineKeyboardButton(text=f"🔎ОПИСАНИЕ", callback_data=f"{k}")
+        ), builder.adjust(1)
     return builder.as_markup(resize_keyboard=True,
-                             input_field_placeholder=msg.TEXT_CHOICE_1)
+                        input_field_placeholder=msg.TEXT_CHOICE_1)
+
 
 def inline_product_order():
     builder = InlineKeyboardBuilder()
@@ -27,46 +28,36 @@ def inline_product_order():
     return builder.as_markup(resize_keyboard=True)
 
 
-################## output ###################
-
-
-@product_router.callback_query(F.data == "description")
-async def output_product(callback: CallbackQuery):
-    album = MediaGroupBuilder()
-    result = prod_db.photos_db()
-    for i in result:
-        album.add(type="photo", media=i)
-    await callback.message.answer(text="<b>👇Мини кошелёк👇</b>")
-    await callback.message.answer_media_group(media=album.build())
-    for j in prod_db.description_db():        
-        await callback.message.answer(text=j)
-    for k in prod_db.price_db():
-        await callback.message.answer(text=f"Цена: {k}", reply_markup=inline_product_order())
-
-
+################ output SQLITE3 #################
 @product_router.callback_query(F.data == "description_order")
 async def description_order(callback: CallbackQuery):
     await callback.message.answer(text=" Вы закали ") # здесь работа с базой данных
 
 
-# @product_router.callback_query(F.photo)
-# async def photo_showcase(callback: CallbackQuery):
-#     showcase = prod_db.photo_showcase()
-#     await callback.message.answer_photo(photo=showcase)
+@product_router.callback_query()
+async def output_product(callback: CallbackQuery):
+    album = MediaGroupBuilder()         # 4 фото для витрины из БД
+    for i in prod_db.photos_db():
+        i = list(i)
+        num = i.pop(0)
+        i = tuple(i)
+        if callback.data == str(num):
+            for j in i:
+                album.add(type=f"photo", media=j)
+                # await callback.message.answer(text="<b>👇Мини кошелёк👇</b>")
+    await callback.message.answer_media_group(media=album.build())
 
+    
+    for k, v in prod_db.description_db():
+        if callback.data == str(k):        # описание из БД
+            await callback.message.answer(text=v)
 
-# def inline_photo_showcase():
-#     builder = InlineKeyboardBuilder()
-#     builder.row(
-#         InlineKeyboardButton(text="🔎ОПИСАНИЕ", callback_data="showcase")
-#     ), builder.adjust(1)
-#     return builder.as_markup(resize_keyboard=True)
-
-
-@product_router.message(F.text.lower() == "/ok")
-async def output_photo(message: Message):
-    album = MediaGroupBuilder()
-    result = prod_db.photo_output()
-    for i in result:
-        album.add(type="photo", media=i)
-    await message.answer_media_group(media=album.build())
+    for k, v in prod_db.price_db():        # цена из БД
+        if callback.data == str(k):
+            await callback.message.answer(text=f"Цена: {v}",\
+                                        reply_markup=inline_product_order())
+            
+@product_router.message()
+async def trash_message(message: Message):
+    await message.answer(text="Такой команды нет",\
+                                    reply_markup=menu_main)

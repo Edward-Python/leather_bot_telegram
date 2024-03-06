@@ -5,8 +5,8 @@ class AdminDB:
     def __init__(self) -> None:
         self.db = sqlite3.connect("admin_db.db")
         self.cur = self.db.cursor()
-        self.cur.execute('''CREATE TABLE IF NOT EXISTS admin_table(
-                         id INTEGER PRYMARY KEY,
+        self.cur.execute('''CREATE TABLE IF NOT EXISTS admin_table (
+                         id INTEGER PRIMARY KEY NOT NULL,
                          photo BLOB,
                          photo1 BLOB,
                          photo2 BLOB,
@@ -27,31 +27,32 @@ class AdminDB:
                     (photo, photo1, photo2, photo3, change, price))
         self.db.commit()
 
-    def photos_db(self):
-        photo_album = self.cur.execute("""SELECT photo, photo1, photo2, photo3 
-                         FROM admin_table""").fetchone()
-        photos = []
-        for photo in photo_album:
-            photos.append(photo)
-        return photos
+    def id_product(self):
+        id_prod = self.cur.execute("""SELECT id FROM admin_table""").fetchall()
+        for k in id_prod:
+            return k
     
     def showcase_photo_db(self):
-        photo_sh_case = self.cur.execute("""SELECT photo FROM admin_table""").fetchone()
-        scase = []
-        for photo in photo_sh_case:
-            scase.append(photo)
-        return scase
+        photo_sh_case = self.cur.execute("""SELECT id, photo FROM admin_table""").fetchall()
+        return photo_sh_case
+    
+    def photos_db(self):
+        photo_album = self.cur.execute("""SELECT id, photo, photo1, photo2, photo3 
+                         FROM admin_table""").fetchall()
+        return photo_album
     
     def description_db(self):
-        desc = self.cur.execute("""SELECT change FROM admin_table""").fetchone()
-        desc_product = []
-        for description in desc:
-            desc_product.append(description)
-        return desc_product
+        desc = self.cur.execute("""SELECT id, change FROM admin_table""").fetchall()        
+        return desc
+    
+    # def description_db(self):
+    #     desc = self.cur.execute("""SELECT id, change FROM admin_table""").fetchone()
+    #     desc_product = []
+    #     for description in desc:
+    #         desc_product.append(description)
+    #     print(desc_product)
+    #     return desc_product
     
     def price_db(self):
-        price_prod = self.cur.execute("""SELECT price FROM admin_table""").fetchone()
-        price_product = []
-        for i in price_prod:
-            price_product.append(i)
-        return map(int, price_product)
+        price_prod = self.cur.execute("""SELECT id, price FROM admin_table""").fetchall()
+        return price_prod

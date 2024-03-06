@@ -93,8 +93,8 @@ async def add(message: Message, state: FSMContext):
     photo_3 = list_product[3]
     change = list_product[4]
     price = list_product[5]
-    admin_db.add(photo=photo, photo1=photo_1, photo2=photo_2, photo3=photo_3,\
-                 change=change, price=price)
+    admin_db.add(photo=photo, photo1=photo_1, photo2=photo_2,\
+                 photo3=photo_3, change=change, price=price)
     
     await state.clear()
 

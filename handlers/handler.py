@@ -41,10 +41,10 @@ async def production_process(message: Message):
 
 @router.message(F.text.upper() == "👀 ИЗДЕЛИЯ")
 async def products(message: Message):
-    showcase = admin_db.showcase_photo_db()
-    for i in showcase:
-        await message.answer_photo(photo=i,\
-                                reply_markup=product.inline_product())
+    showcase = admin_db.showcase_photo_db()   # 1 фото для витрины из БД
+    for k, v in showcase:
+        await message.answer_photo(photo=v,\
+                reply_markup=product.inline_product(k))
 
 
 @router.message(F.text.upper() == "🛠 ИСПОЛЬЗУЕМЫЕ ИНСТРУМЕНТЫ")
