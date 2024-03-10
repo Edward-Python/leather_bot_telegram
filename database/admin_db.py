@@ -26,11 +26,6 @@ class AdminDB:
                     VALUES (?, ?, ?, ?, ?, ?)""",
                     (photo, photo1, photo2, photo3, change, price))
         self.db.commit()
-
-    def id_product(self):
-        id_prod = self.cur.execute("""SELECT id FROM admin_table""").fetchall()
-        for k in id_prod:
-            return k
     
     def showcase_photo_db(self):
         photo_sh_case = self.cur.execute("""SELECT id, photo FROM admin_table""").fetchall()
@@ -45,14 +40,9 @@ class AdminDB:
         desc = self.cur.execute("""SELECT id, change FROM admin_table""").fetchall()        
         return desc
     
-    # def description_db(self):
-    #     desc = self.cur.execute("""SELECT id, change FROM admin_table""").fetchone()
-    #     desc_product = []
-    #     for description in desc:
-    #         desc_product.append(description)
-    #     print(desc_product)
-    #     return desc_product
-    
     def price_db(self):
         price_prod = self.cur.execute("""SELECT id, price FROM admin_table""").fetchall()
         return price_prod
+    
+
+admin_db = AdminDB()

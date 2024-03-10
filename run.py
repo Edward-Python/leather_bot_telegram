@@ -7,16 +7,16 @@ from aiogram import Bot, Dispatcher
 from configs.config import conf_settigs
 from handlers.product import product_router
 from handlers.handler import router
-from handlers.women_wallet_kenya import router_women_wallet_kenya
 from admin.admin_handler import router_admin
+from user.user_handler import router_user
 
 
 async def main():
     dp.include_routers(router,\
-                        router_women_wallet_kenya,\
+                       router_user,\
                         router_admin,\
                         product_router)
-    # удаляет команды (когда откл.бот)  
+    # удаляет запросы (когда откл.бот) 
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
 

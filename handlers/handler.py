@@ -4,12 +4,11 @@ from aiogram.types import Message, FSInputFile
 from aiogram.filters import CommandStart, Command
 from aiogram.utils.media_group import MediaGroupBuilder
 
-from handlers import keyboard, women_wallet_kenya, product
+from handlers import keyboard, product
 from configs import msg
 from admin.admin_inline_kb import admin_panel
-from database.admin_db import AdminDB
+from database.admin_db import admin_db
 
-admin_db = AdminDB()
 router = Router()
 
 

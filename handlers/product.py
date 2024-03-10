@@ -4,10 +4,9 @@ from aiogram.utils.media_group import MediaGroupBuilder
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from configs import msg
-from database.admin_db import AdminDB
+from database.admin_db import admin_db
 from handlers.keyboard import menu_main
 
-prod_db = AdminDB()
 product_router = Router()
 
 ###############  Keybord #################
@@ -29,15 +28,17 @@ def inline_product_order():
 
 
 ################ output SQLITE3 #################
-@product_router.callback_query(F.data == "description_order")
-async def description_order(callback: CallbackQuery):
-    await callback.message.answer(text=" Вы закали ") # здесь работа с базой данных
+
+# @product_router.callback_query(F.data == "description_order")
+# async def description_order(callback: CallbackQuery):
+#     user_id = callback.message.from_user.id
+#     await callback.message.answer(text=" Вы закали ") # здесь работа с базой данных
 
 
 @product_router.callback_query()
 async def output_product(callback: CallbackQuery):
     album = MediaGroupBuilder()         # 4 фото для витрины из БД
-    for i in prod_db.photos_db():
+    for i in admin_db.photos_db():
         i = list(i)
         num = i.pop(0)
         i = tuple(i)
@@ -48,16 +49,16 @@ async def output_product(callback: CallbackQuery):
     await callback.message.answer_media_group(media=album.build())
 
     
-    for k, v in prod_db.description_db():
+    for k, v in admin_db.description_db():
         if callback.data == str(k):        # описание из БД
             await callback.message.answer(text=v)
 
-    for k, v in prod_db.price_db():        # цена из БД
+    for k, v in admin_db.price_db():        # цена из БД
         if callback.data == str(k):
             await callback.message.answer(text=f"Цена: {v}",\
                                         reply_markup=inline_product_order())
             
-@product_router.message()
-async def trash_message(message: Message):
-    await message.answer(text="Такой команды нет",\
-                                    reply_markup=menu_main)
+# @product_router.message()
+# async def trash_message(message: Message):
+#     await message.answer(text="Такой команды нет",\
+#                                     reply_markup=menu_main)
