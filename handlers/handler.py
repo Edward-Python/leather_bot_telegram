@@ -6,7 +6,7 @@ from aiogram.utils.media_group import MediaGroupBuilder
 
 from handlers import keyboard, product
 from configs import msg
-from admin.admin_inline_kb import admin_panel
+from fsm_mashine.admin_handler import admin_panel
 from database.admin_db import admin_db
 
 router = Router()

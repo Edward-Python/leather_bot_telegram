@@ -7,8 +7,8 @@ from aiogram import Bot, Dispatcher
 from configs.config import conf_settigs
 from handlers.product import product_router
 from handlers.handler import router
-from admin.admin_handler import router_admin
-from user.user_handler import router_user
+from fsm_mashine.admin_handler import router_admin
+from fsm_mashine.user_handler import router_user
 
 
 async def main():

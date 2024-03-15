@@ -26,6 +26,10 @@ class AdminDB:
                     VALUES (?, ?, ?, ?, ?, ?)""",
                     (photo, photo1, photo2, photo3, change, price))
         self.db.commit()
+
+    def id_product_for_user(self):
+        id_product_for_user = self.cur.execute("""SELECT id FROM admin_table""").fetchall()
+        return id_product_for_user
     
     def showcase_photo_db(self):
         photo_sh_case = self.cur.execute("""SELECT id, photo FROM admin_table""").fetchall()

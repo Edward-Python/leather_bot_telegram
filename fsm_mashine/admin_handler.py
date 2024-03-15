@@ -2,13 +2,25 @@ from aiogram import Router, F
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
 from aiogram.filters import StateFilter
-from aiogram.types import Message, ReplyKeyboardRemove
+from aiogram.types import Message, ReplyKeyboardRemove, KeyboardButton
+from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
-from admin.admin_inline_kb import admin_panel
 from database.admin_db import admin_db
 
 
 router_admin = Router()
+
+################## admin_panel #######################
+
+def admin_panel():
+    builder = ReplyKeyboardBuilder()
+    builder.row(
+        KeyboardButton(text="добавить"),
+        KeyboardButton(text="удалить"),
+        KeyboardButton(text="выход")
+    ), builder.adjust(1, 1, 1)
+    return builder.as_markup(resize_keyboard=True)
+
 
 ################## admin_panel #######################
 class Add(StatesGroup):
