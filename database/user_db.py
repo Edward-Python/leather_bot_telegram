@@ -7,8 +7,8 @@ class UserDB:
         self.cur = self.db.cursor()
         self.cur.execute('''CREATE TABLE IF NOT EXISTS user_table(
                          id INTEGER PRIMARY KEY NOT NULL,
-                         id_product BLOB,
-                         user_id INTEGER,
+                         id_product INTEGER,
+                         user_id BLOB,
                          full_name TEXT,
                          index_adress BLOB,
                          number_phon INTEGER)''')

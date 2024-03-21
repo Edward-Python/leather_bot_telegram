@@ -6,6 +6,7 @@ from aiogram.types import Message, ReplyKeyboardRemove, KeyboardButton
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
 from database.admin_db import admin_db
+from handlers.keyboard import menu_main
 
 
 router_admin = Router()
@@ -106,3 +107,9 @@ async def add(message: Message, state: FSMContext):
     admin_db.add(photo=photo, photo1=photo_1, photo2=photo_2,\
                  photo3=photo_3, change=change, price=price)
     await state.clear()
+
+
+@router_admin.message()
+async def trash_message(message: Message):
+    await message.answer(text="Такой команды нет",\
+                                    reply_markup=menu_main)

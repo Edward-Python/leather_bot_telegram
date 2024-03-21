@@ -41,8 +41,3 @@ async def output_product(callback: CallbackQuery):
         if callback.data == str(k):
             await callback.message.answer(text=f"Цена: {v}",\
                                         reply_markup=inline_product_order())
-            
-# @product_router.message()
-# async def trash_message(message: Message):
-#     await message.answer(text="Такой команды нет",\
-#                                     reply_markup=menu_main)

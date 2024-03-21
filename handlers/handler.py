@@ -77,9 +77,3 @@ async def trash_text(message: Message):
     await message.answer(text=(f"{message.from_user.full_name}.\n"
                                f"{msg.TEXT_CHOICE_1}"), reply_markup=keyboard.menu_main)
     await message.delete()
-    
-
-# @router.message()
-# async def trash_text(message: Message):
-#     await message.answer(text=(f"{message.from_user.full_name}.\n"
-#                                f"{msg.TEXT_CHOICE_1}"), reply_markup=keyboard.menu_main)

@@ -3,6 +3,7 @@ import logging
 import time
 
 from aiogram import Bot, Dispatcher
+from aiogram.enums.parse_mode import ParseMode
 
 from configs.config import conf_settigs
 from handlers.product import product_router
