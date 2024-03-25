@@ -22,6 +22,11 @@ def admin_panel():
     ), builder.adjust(1, 1, 1)
     return builder.as_markup(resize_keyboard=True)
 
+################## admin_panel_exit #######################
+
+@router_admin.message(F.text == "выход")
+async def exit_admin(message: Message):
+    await message.answer(text="Выход из админ панели", reply_markup=menu_main)
 
 ################## admin_panel #######################
 class Add(StatesGroup):
@@ -33,9 +38,13 @@ class Add(StatesGroup):
     add_price = State()
 
 
+# class DeleteProduct(StatesGroup):
+#     del_product = State()
+
+
 ################## state add #######################
 
-@router_admin.message(StateFilter(None), F.text.lower() == "добавить")
+@router_admin.message(F.text == "добавить")
 async def add(message: Message, state: FSMContext):
     await message.answer(text="❗Нужно загрузить 4 фото изделия❗")
     await message.answer(text="✅Загрузите лучшее первое фото (для витрины)❕",\
@@ -43,8 +52,8 @@ async def add(message: Message, state: FSMContext):
     await state.set_state(Add.add_photo)
 
 
-@router_admin.message(Add.add_photo, F.photo)
-async def add(message: Message, state: FSMContext):    
+@router_admin.message(Add.add_photo)
+async def add(message: Message, state: FSMContext):
     add_phot = message.photo[-1].file_id
     await state.update_data(add_photo=add_phot)
     await message.answer(text="Фотография добавлена")
@@ -107,6 +116,32 @@ async def add(message: Message, state: FSMContext):
     admin_db.add(photo=photo, photo1=photo_1, photo2=photo_2,\
                  photo3=photo_3, change=change, price=price)
     await state.clear()
+
+################## admin_panel_delete #######################
+
+class DeleteProduct(StatesGroup):
+    del_product = State()
+
+
+@router_admin.message(F.text == "удалить")
+async def delete_product(message: Message, state: FSMContext):
+    await message.answer(text="Введите артикул изделия")
+    await state.set_state(DeleteProduct.del_product)
+
+
+@router_admin.message(DeleteProduct.del_product, F.text)
+async def input_del_product(message: Message, state: FSMContext):
+    text_artic = message.text.replace(" ", "")
+    if text_artic.isalpha() == False:
+        await state.update_data(delete_product=message.text)
+        await message.answer(text="Изделие удалено",\
+                                    reply_markup=admin_panel())
+        del_product = await state.get_data()
+        delete_prod = list(map(int, del_product.values())).pop()
+        admin_db.product_delete(delete_prod)
+        await state.clear()
+    else:
+        await message.answer("Ввод не верен !")
 
 
 @router_admin.message()

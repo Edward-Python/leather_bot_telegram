@@ -13,7 +13,7 @@ product_router = Router()
 def inline_product(k):
     builder = InlineKeyboardBuilder()
     builder.add(
-        InlineKeyboardButton(text=f"🔎ОПИСАНИЕ", callback_data=f"{k}")
+        InlineKeyboardButton(text="🔎ОПИСАНИЕ", callback_data=f"{k}")
         ), builder.adjust(1)
     return builder.as_markup(resize_keyboard=True,
                         input_field_placeholder=msg.TEXT_CHOICE_1)
@@ -28,7 +28,7 @@ async def output_product(callback: CallbackQuery):
         i = tuple(i)
         if callback.data == str(num):
             for j in i:
-                album.add(type=f"photo", media=j)
+                album.add(type="photo", media=j)
     await callback.message.answer_media_group(media=album.build())    
 
     

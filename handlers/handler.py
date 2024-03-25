@@ -35,7 +35,6 @@ async def production_process(message: Message):
                                f"меня зовут <b>Эдуард</b>.\n"
                                f"{msg.ABOUT_US}"),
                          reply_markup=keyboard.production_process)
-    await message.delete()
 
 
 @router.message(F.text.upper() == "👀 ИЗДЕЛИЯ")
@@ -76,4 +75,3 @@ async def delivery_terms(message: Message):
 async def trash_text(message: Message):
     await message.answer(text=(f"{message.from_user.full_name}.\n"
                                f"{msg.TEXT_CHOICE_1}"), reply_markup=keyboard.menu_main)
-    await message.delete()

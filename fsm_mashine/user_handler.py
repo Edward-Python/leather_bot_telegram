@@ -62,7 +62,7 @@ async def add(message: Message, state: FSMContext):
         await message.answer(text="Допущена ошибка❗")
 
 
-@router_user.message(Add.index_adress)
+@router_user.message(Add.index_adress, F.text)
 async def add(message: Message, state: FSMContext):
     await state.update_data(index_adress=message.text)
 

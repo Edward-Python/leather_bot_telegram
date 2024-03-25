@@ -27,9 +27,10 @@ class AdminDB:
                     (photo, photo1, photo2, photo3, change, price))
         self.db.commit()
 
-    # def id_product_for_user(self):
-    #     id_product_for_user = self.cur.execute("""SELECT id FROM admin_table""").fetchall()
-    #     return id_product_for_user
+    def product_delete(self, id):
+        product_del = self.cur.execute(f"""DELETE FROM admin_table WHERE id=={id}""").fetchall()
+        self.db.commit()
+        return product_del
     
     def showcase_photo_db(self):
         photo_sh_case = self.cur.execute("""SELECT id, photo FROM admin_table""").fetchall()
